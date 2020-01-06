@@ -1,0 +1,122 @@
+#----------------------------------------------------------------------
+# File Read/Write Module
+''' author: Jeff Peery '''
+# date: 08/08/2008
+# email: JeffPeery@yahoo.com
+#----------------------------------------------------------------------
+
+#----------------------------------------------------------------------
+# Revision Log
+#
+# Rev   Date        Author  Description    
+#----------------------------------------------------------------------
+'''
+1.01    2014/02/26  SPN     Added GetUniquePath method
+'''
+#-------------------------------------------------------------------------
+# Modules
+#-------------------------------------------------------------------------
+import string
+import os
+import myUtil
+
+def GetUniquePath(path):
+    root, ext = os.path.splitext(path)
+    i=1
+    while os.path.exists(root+ext):
+        root, ext = os.path.splitext(path)
+        root = root+' (%d)'%i
+        i+=1
+    return root+ext
+
+class myFile:
+    def __init__(self, path):
+        # file path
+        self.path = path
+
+    def GetTextByLines(self):
+        """
+        Read file
+        Returns list where each element is
+        one line of text
+        """       
+        if not os.path.exists(self.path):
+            myUtil.ErrorDialog(None, 'path does not exist.')
+            return []
+        
+        try:
+            fh = open(self.path, 'r')
+            lines = fh.readlines()
+            fh.close()
+            return lines
+        except:
+            myUtil.ErrorDialog(None, 'error in gettextbylines: myfile.py')
+            return []  
+
+    def WriteToFile(self, lines):
+        """
+        Overwrite file with lines
+        lines is list, each element is one string line
+        """        
+        try:
+            fh = open(self.path, 'w')
+            for line in lines:
+                fh.write(line)
+            fh.close()
+        except:
+            myUtil.ErrorDialog(None, 'error in writetofile method: myfile.py')
+        
+        
+    def Append(self, new_line):
+        """
+        Append line of text to file
+        """
+        assert type(new_line) == str
+
+        if not os.path.exists(self.path):
+            myUtil.ErrorDialog(None, 'path does not exist.')
+            return
+        
+        try:       
+            lines = self.GetTextByLines()
+            lines.append(new_line)
+            self.WriteToFile(lines)
+        except:
+            myUtil.ErrorDialog(None, 'error in append method: myfile.py')
+        
+
+    def CreateFile(self):
+        """
+        Create new file
+        """
+        if not os.path.exists(self.path):
+            myUtil.ErrorDialog(None, 'path does not exist.')
+            return
+        
+        try:
+            fh = open(self.path, 'w')
+            fh.close()
+        except:
+            myUtil.ErrorDialog(None, 'error in createfile method: myfile.py')
+        
+
+    def GetLockDir(self):
+        return os.path.dirname(self.path)+'-Lck'
+    
+    def Lock(self):
+        d = self.GetLockDir()
+        if not os.path.exists(d):
+            os.mkdir(d)
+            return True
+        else:
+            return False
+            
+    def UnLock(self):
+        d = self.GetLockDir()
+        if os.path.exists(d):
+            os.rmdir(d)
+            return True
+        else:
+            return False
+        
+        
