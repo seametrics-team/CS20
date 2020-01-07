@@ -91,10 +91,12 @@ METER_LABEL_PE202_075        = 'PE202-075'
 METER_LABEL_PE202_075_138    = 'PE202-075-138'
 METER_LABEL_PE202_075_270    = 'PE202-075-270'
 METER_LABEL_PE202_075_277    = 'PE202-075-277'
+METER_LABEL_PE202_075_400    = 'PE202-075-400'
 METER_LABEL_PE202_038        = 'PE202-038'
 METER_LABEL_PE202_038_138    = 'PE202-038-138'
 METER_LABEL_PE202_038_270    = 'PE202-038-270'
 METER_LABEL_PE202_038_277    = 'PE202-038-277'
+METER_LABEL_PE202_038_400    = 'PE202-038-400'
 # if adding a new option be sure to edit SetOptions method
 METER_LABELS = [METER_LABEL_PE102_075_270,
                 METER_LABEL_PE102_075_271,
@@ -123,7 +125,7 @@ PE102_OPTION_277            = '-277 (PE102)'
 PE202_STANDARD             = 'Std (PE202)'
 PE202_OPTION_138           = '-138 (PE202)'
 PE202_OPTION_270           = '-270 (PE202)'
-PE202_OPTION_277           = '-277 (PE202)'
+PE202_OPTION_400           = '-400 (PE202)'
 # display types
 DISPLAY_TYPE_AG2000         = '1'
 DISPLAY_TYPE_WMX            = '0'
@@ -1644,7 +1646,14 @@ class PE102_REV_H(PE102_REV_G):
             elif self.GetNominalSize() == SIZE_THREE_QUARTERS_INCH:
                 self.SetIdentity075_PE202_277()
             return True
-        
+
+        elif option == PE202_OPTION_400:
+            if self.GetNominalSize() == SIZE_THREE_EIGHTS_INCH:
+                self.SetIdentity038_PE202_400()
+            elif self.GetNominalSize() == SIZE_THREE_QUARTERS_INCH:
+                self.SetIdentity075_PE202_400()
+            return True
+
         else: return False
 
     def SetIdentity038(self):
@@ -1833,6 +1842,8 @@ class PE102_REV_H(PE102_REV_G):
         
         assert self.max_flow_rate >= 100.0*self.min_flow_rate
         assert self.max_flow_rate*self.k_factor/SEC_PER_MIN < 1500.0
+    
+    def SetIdentity038_400(self):
 
 class PE102_REV_J(PE102_REV_H):
     def __init__(self):
@@ -1871,6 +1882,22 @@ class PE102_REV_J(PE102_REV_H):
         PE102_REV_H.SetIdentity038_277(self)
         # Disable analog output test
         self.test_analog_output = False
+        
+    def SetIdentity075_400(self):
+        PE102_REV_H.SetIdentity075(self)
+        self.SetLabel(METER_LABEL_PE102_075_400)
+        self.k_factor = 10000.0
+        self.max_flow_rate = 8.0
+        self.fs_flow_rate = 8.0
+        self.ls_flow_rate = 0.75
+        # Disable analog output test
+        self.test_analog_output = False
+
+
+    def SetIdentity038_400(self):
+        PE102_REV_H.SetIdentity038_400(self)
+
+
 
     #-----------------------------
     # PE202 identities
@@ -1945,7 +1972,14 @@ class PE102_REV_J(PE102_REV_H):
         # based on engr sample 32B
         self.typical_fsadc = 325.0
         self.typical_zradc = 1.0
-        
+
+    def SetIdentity038_PE202_400(self):
+        self.SetIdentity038_400()
+        self.SetLabel(METER_LABEL_PE202_038_400)
+        #  NOT BASED ON ANYTHING EXCEPT VALUES IN THE OTHER METHODS
+        self.typical_fsadc = 325.0
+        self.typical_zradc = 1.0
+
     def SetOptions(self, s):
         assert s in NOMINAL_SIZES
         if s == SIZE_THREE_QUARTERS_INCH:
@@ -1956,6 +1990,7 @@ class PE102_REV_J(PE102_REV_H):
                             PE202_OPTION_138,
                             PE202_OPTION_270,
                             PE202_OPTION_277,
+                            PE202_OPTION_400,
                             ]
         elif s == SIZE_THREE_EIGHTS_INCH:
             self.options = [OPTION_STANDARD,
@@ -1965,6 +2000,7 @@ class PE102_REV_J(PE102_REV_H):
                             PE202_OPTION_138,
                             PE202_OPTION_270,
                             PE202_OPTION_277,
+                            PE202_OPTION_400,
                             ]
             
     def WriteLowFlowCuttoff(self, value=PE102_DEFAULT_LOW_FLOW_CUTTOFF):
