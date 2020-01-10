@@ -114,7 +114,9 @@ METER_LABELS = [METER_LABEL_PE102_075_270,
                 METER_LABEL_PE202_075_277,
                 METER_LABEL_PE202_038,
                 METER_LABEL_PE202_038_270,
-                METER_LABEL_PE202_038_277
+                METER_LABEL_PE202_038_277,
+                METER_LABEL_PE202_038_400,
+                METER_LABEL_PE202_075_400
                 ]
 # PE102 OPTION LABELS
 OPTION_STANDARD             = 'Std (PE102)'
@@ -1844,6 +1846,51 @@ class PE102_REV_H(PE102_REV_G):
         assert self.max_flow_rate*self.k_factor/SEC_PER_MIN < 1500.0
     
     def SetIdentity038_400(self):
+        #CURRENTLY JUST A COPY OF SetIdentity038_277
+        """
+        set identity of PE102 to 3/8" flow meter
+        """
+        self.SetLabel(METER_LABEL_PE102_038_277)
+        # 500 ppL
+        self.k_factor = 1000.0*3.78541*5.0
+        # maximum and flow rates
+        self.max_flow_rate = 3.0
+        self.min_flow_rate = 0.03
+        # filter value
+        self.filter_constant = 0.75
+        # calibration flow rates
+        self.fs_flow_rate = 2.0
+        self.ls_flow_rate = 0.1
+        # accuracy allowance
+        self.allowance = 0.001
+        # Frequency output at FS, not specific
+        # to any meter. Meters are temporarily
+        # set to this freq only during
+        # calibration. This is used to assure
+        # good resolution of pulse counts during
+        # test.
+##        self.test_freq = self.k_factor*self.max_flow_rate/SEC_PER_MIN
+        # population mean fsadc, zradc obtained from "pop mean" xlsx file in source code folder
+        self.typical_fsadc = 288.0
+        self.typical_zradc = 0.53
+##        self.typical_fsadc = 283.0
+##        self.typical_zradc = 0.25
+        # nominal size of meter
+        self.SetNominalSize(SIZE_THREE_EIGHTS_INCH)
+        # calibration target test times
+        self.target_FS_test_time = 60.0*1.0
+        self.target_LS_test_time = 60.0*1.5  
+        # filter constant used during calibration
+        self.calibration_filter_constant = 0.5
+        # filter constant
+        # zero is no filter
+        # 1 is max filter (i.e., no change in output)
+        self.filter_constant = 0.65
+        # Disable analog output test
+        self.test_analog_output = False
+        
+        assert self.max_flow_rate >= 100.0*self.min_flow_rate
+        assert self.max_flow_rate*self.k_factor/SEC_PER_MIN < 1500.0
 
 class PE102_REV_J(PE102_REV_H):
     def __init__(self):
@@ -1937,6 +1984,13 @@ class PE102_REV_J(PE102_REV_H):
         # based on engr sample 32B
         self.typical_fsadc = 164.0
         self.typical_zradc = 1.0
+    
+    def SetIdentity075_PE202_400(self):
+        self.SetIdentity075_400()
+        self.SetLabel(METER_LABEL_PE202_075_400)
+        #BASED ON NOTHING RIGHT NOW
+        self.typical_fsadc = 0.0
+        self.typical_zradc = 0.0
 
     def SetIdentity038_PE202(self):
         """
