@@ -127,6 +127,7 @@ PE102_OPTION_277            = '-277 (PE102)'
 PE202_STANDARD             = 'Std (PE202)'
 PE202_OPTION_138           = '-138 (PE202)'
 PE202_OPTION_270           = '-270 (PE202)'
+PE202_OPTION_277           = '-277 (PE202)'
 PE202_OPTION_400           = '-400 (PE202)'
 # display types
 DISPLAY_TYPE_AG2000         = '1'
