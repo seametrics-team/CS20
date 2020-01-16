@@ -1990,8 +1990,8 @@ class PE102_REV_J(PE102_REV_H):
         self.SetIdentity075_400()
         self.SetLabel(METER_LABEL_PE202_075_400)
         #BASED ON NOTHING RIGHT NOW
-        self.typical_fsadc = 0.0
-        self.typical_zradc = 0.0
+        self.typical_fsadc = 164.0
+        self.typical_zradc = 1.0
 
     def SetIdentity038_PE202(self):
         """
