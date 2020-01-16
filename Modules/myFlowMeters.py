@@ -1933,7 +1933,7 @@ class PE102_REV_J(PE102_REV_H):
         
     def SetIdentity075_400(self):
         PE102_REV_H.SetIdentity075(self)
-        self.SetLabel(METER_LABEL_PE102_075_400)
+        self.SetLabel(METER_LABEL_PE202_075_400)
         self.k_factor = 10000.0
         self.max_flow_rate = 8.0
         self.fs_flow_rate = 8.0
